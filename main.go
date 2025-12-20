@@ -52,7 +52,7 @@ func main() {
 	log.Printf("Listening in https://localhost:8443\n")
 	log.Fatal(http.ListenAndServeTLS(
 		":8443",
-		"localhost.pem", // se generan con mkcert -install. Para generarlos se tiene que ir a https://github.com/FiloSottile/mkcert
+		"localhost.pem", // se generan con mkcert -install localhost. Para generarlos se tiene que ir a https://github.com/FiloSottile/mkcert
 		"localhost-key.pem",
 		handlerResponseServer))
 }
