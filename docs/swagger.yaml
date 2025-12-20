@@ -1,0 +1,204 @@
+basePath: /
+definitions:
+  taskstore.Task:
+    properties:
+      due:
+        type: string
+      id:
+        type: integer
+      tags:
+        items:
+          type: string
+        type: array
+      text:
+        type: string
+    type: object
+host: localhost:8443
+info:
+  contact:
+    name: Andres
+  description: API REST para gestión de tareas
+  title: REST Task Server
+  version: "1.0"
+paths:
+  /due/{year}/{month}/{day}/:
+    get:
+      description: Devuelve tareas por fecha límite
+      parameters:
+      - description: Año
+        in: path
+        name: year
+        required: true
+        type: integer
+      - description: Mes
+        in: path
+        name: month
+        required: true
+        type: integer
+      - description: Día
+        in: path
+        name: day
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/taskstore.Task'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Obtener tareas por fecha
+      tags:
+      - task
+  /tag/{tag}/:
+    get:
+      description: Devuelve tareas que contienen un tag
+      parameters:
+      - description: Tag
+        in: path
+        name: tag
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/taskstore.Task'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: Obtener tareas por tag
+      tags:
+      - task
+  /task/:
+    delete:
+      description: Borra todas las tareas
+      responses:
+        "204":
+          description: No Content
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BasicAuth: []
+      summary: Eliminar todas las tareas
+      tags:
+      - task
+    get:
+      description: Devuelve todas las tareas
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/taskstore.Task'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BasicAuth: []
+      summary: Obtener todas las tareas
+      tags:
+      - task
+    post:
+      consumes:
+      - application/json
+      description: Crea una nueva tarea
+      parameters:
+      - description: Nueva tarea
+        in: body
+        name: task
+        required: true
+        schema:
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: integer
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "415":
+          description: Unsupported Media Type
+          schema:
+            type: string
+      summary: Crear una tarea
+      tags:
+      - task
+  /task/{id}/:
+    delete:
+      description: Elimina una tarea por ID
+      parameters:
+      - description: ID de la tarea
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BasicAuth: []
+      summary: Eliminar una tarea
+      tags:
+      - task
+    get:
+      description: Obtiene una tarea por ID
+      parameters:
+      - description: ID de la tarea
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/taskstore.Task'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Obtener una tarea
+      tags:
+      - task
+securityDefinitions:
+  BasicAuth:
+    type: basic
+swagger: "2.0"
