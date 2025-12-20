@@ -6,6 +6,7 @@ import (
 	"log"
 	"mime"
 	"net/http"
+	"restServer/graph/model"
 	"restServer/taskstore"
 	"strconv"
 	"time"
@@ -18,6 +19,11 @@ type TaskServer struct {
 func NewTaskServer() *TaskServer {
 	store := taskstore.New()
 	return &TaskServer{store: store}
+}
+
+// GetStore retorna el TaskStore para ser usado por GraphQL
+func (ts *TaskServer) GetStore() *taskstore.TaskStore {
+	return ts.store
 }
 
 //-------------------------------------------- Controladores ----------------------------------------//
@@ -37,13 +43,14 @@ func (ts *TaskServer) CreateTaskHandler(w http.ResponseWriter, r *http.Request) 
 	log.Printf("handling task create at %s\n", r.URL.Path)
 
 	type RequestTask struct {
-		Text string   `json:"text"`
-		Tags []string `json:"tags"`
-		Due  string   `json:"due"`
+		Text        string              `json:"text"`
+		Tags        []string            `json:"tags"`
+		Due         string              `json:"due"`
+		Attachments []*model.Attachment `json:"attachments"`
 	}
 
 	type ResponseId struct {
-		Id int `json:"id"`
+		Id string `json:"id"`
 	}
 
 	contentType := r.Header.Get("Content-Type")
@@ -69,13 +76,13 @@ func (ts *TaskServer) CreateTaskHandler(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	due, err := time.Parse("2006-01-02 15:04:05", req.Due)
+	due, err := time.Parse(time.RFC3339, req.Due)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	id := ts.store.CreateTask(req.Text, req.Tags, due)
+	id := ts.store.CreateTask(req.Text, req.Tags, due, req.Attachments)
 	js, err := json.Marshal(ResponseId{Id: id})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -110,11 +117,7 @@ func renderJSON(w http.ResponseWriter, v interface{}) {
 func (ts *TaskServer) GetTaskHandler(w http.ResponseWriter, r *http.Request) {
 	log.Printf("handling task get at %s\n", r.URL.Path)
 
-	id, err := strconv.Atoi(r.PathValue("id"))
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
+	id := r.PathValue("id")
 
 	task, err := ts.store.GetTask(id)
 	if err != nil {
@@ -137,13 +140,9 @@ func (ts *TaskServer) GetTaskHandler(w http.ResponseWriter, r *http.Request) {
 func (ts *TaskServer) DeleteTaskHandler(w http.ResponseWriter, r *http.Request) {
 	log.Printf("handling task delete at %s\n", r.URL.Path)
 
-	idTask, err := strconv.Atoi(r.PathValue("id"))
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
+	idTask := r.PathValue("id")
 
-	err = ts.store.DeleteTask(idTask)
+	err := ts.store.DeleteTask(idTask)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

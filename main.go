@@ -9,10 +9,13 @@
 package main
 
 import (
+	"github.com/99designs/gqlgen/graphql/handler"
+	"github.com/99designs/gqlgen/graphql/playground"
 	s "github.com/swaggo/http-swagger"
 	"log"
 	"net/http"
 	d "restServer/docs"
+	"restServer/graph"
 	"restServer/internal"
 	"restServer/server"
 )
@@ -26,12 +29,25 @@ func main() {
 	// Logica de negocio
 	taskServer := server.NewTaskServer()
 
+	// Verificar que el store existe
+	store := taskServer.GetStore()
+	log.Printf("TaskServer store creado: %p", store)
+
+	// GraphQL server - comparte el mismo store que REST
+	graphqlServer := handler.New(graph.NewExecutableSchema(graph.Config{
+		Resolvers: &graph.Resolver{Store: store},
+	}))
+
+	log.Printf("GraphQL Resolver store configurado: %p", store)
+
 	// Swagger config
 	d.SwaggerInfo.Schemes = []string{"https"}
 	d.SwaggerInfo.Host = "localhost:8443"
 
 	// Endpoints publicos (sin autenticación)
 	mux.Handle("/docs/", s.WrapHandler)
+	mux.Handle("/graphql", graphqlServer)
+	mux.Handle("/playground", playground.Handler("GraphQL Playground", "/graphql"))
 	mux.HandleFunc("POST /task/", taskServer.CreateTaskHandler)
 	mux.HandleFunc("GET /task/{id}/", taskServer.GetTaskHandler)
 	mux.HandleFunc("GET /tag/{tag}/", taskServer.TagHandler)
