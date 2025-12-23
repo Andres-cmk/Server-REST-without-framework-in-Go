@@ -33,7 +33,7 @@ type Query struct {
 }
 
 type Task struct {
-	ID          string        `json:"Id"`
+	ID          string        `json:"ID"`
 	Text        string        `json:"Text"`
 	Tags        []string      `json:"Tags,omitempty"`
 	Due         time.Time     `json:"Due"`
