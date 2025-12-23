@@ -1,4 +1,305 @@
-// GraphQL
+# ===============================================
+# Usa estos ejemplos en: https://localhost:8443/playground
+
+# - El endpoint GraphQL es: https://localhost:8443/graphql
+# - El playground está en: https://localhost:8443/playground
+# - Para consultas complejas, usa variables en lugar de valores hardcoded
+# - Los arrays vacíos se escriben como: []
+# - Los IDs son strings, no números
+# - Las fechas deben estar en formato RFC3339: "2025-12-25T23:59:59Z"
+
+# ===============================================
+# NOTAS IMPORTANTES
+# ===============================================
+
+#   }'
+#     }
+#       }
+#         "Attachments": []
+#         "Due": "2025-12-25T23:59:59Z",
+#         "Tags": ["curl"],
+#         "Text": "Tarea desde curl",
+#       "input": {
+#     "variables": {
+#     "query": "mutation($input: NewTask!) { createTask(input: $input) { Id Text } }",
+#   -d '{
+#   -H "Content-Type: application/json" `
+# curl.exe -k -X POST https://localhost:8443/graphql `
+# Mutation con variables:
+
+#   -d '{"query": "query { getAllTasks { Id Text Tags } }"}'
+#   -H "Content-Type: application/json" `
+# curl.exe -k -X POST https://localhost:8443/graphql `
+# Query simple:
+
+# ===============================================
+# USAR CON CURL (PowerShell)
+# ===============================================
+
+}
+  deleteTask(id: "ID_AQUI")
+mutation Step4Delete {
+# 4. Eliminar la tarea (usa el ID del paso 1)
+
+}
+  }
+    Text
+    Id
+  getTasksByTag(tag: "estudio") {
+query Step3GetByTag {
+# 3. Consultar por tag
+
+}
+  }
+    Tags
+    Text
+    Id
+  getAllTasks {
+query Step2GetAll {
+# 2. Consultar todas las tareas
+
+}
+  }
+    Text
+    Id
+  }) {
+    Attachments: []
+    Due: "2025-12-30T20:00:00Z"
+    Tags: ["estudio", "tecnología"]
+    Text: "Estudiar GraphQL"
+  createTask(input: {
+mutation Step1CreateTask {
+# 1. Crear tarea
+
+# ------------------------------------
+# Flujo 1: Crear, Consultar, Eliminar
+
+# ===============================================
+# EJEMPLOS COMPLETOS DE FLUJO
+# ===============================================
+
+# }
+#   "includeAttachments": true
+# {
+# Variables:
+
+}
+  }
+    }
+      Date
+      Name
+    Attachments @include(if: $includeAttachments) {
+    Tags
+    Text
+    Id
+  getAllTasks {
+query GetTasksConditional($includeAttachments: Boolean!) {
+
+# ===============================================
+# DIRECTIVES (@include, @skip)
+# ===============================================
+
+}
+  }
+    Text
+    Id
+  personalTasks: getTasksByTag(tag: "personal") {
+
+  }
+    Text
+    Id
+  urgentTasks: getTasksByTag(tag: "urgente") {
+query GetTasksWithAliases {
+
+# ===============================================
+# ALIASES (Alias para resultados)
+# ===============================================
+
+}
+  }
+    }
+      Due
+      Tags
+    ... on Task {
+    Text
+    Id
+  getAllTasks {
+query GetTasksInline {
+
+# ===============================================
+# INLINE FRAGMENTS
+# ===============================================
+
+}
+  }
+    ...TaskWithAttachments
+  getAllTasks {
+query GetTasksWithFragments {
+
+}
+  }
+    Contents
+    Date
+    Name
+  Attachments {
+  ...TaskDetails
+fragment TaskWithAttachments on Task {
+
+}
+  Due
+  Tags
+  Text
+  Id
+fragment TaskDetails on Task {
+
+# ===============================================
+# FRAGMENTS (Reutilización)
+# ===============================================
+
+# }
+#   }
+#     "Attachments": []
+#     "Due": "2025-12-28T20:00:00Z",
+#     "Tags": ["variable", "ejemplo"],
+#     "Text": "Tarea con variables",
+#   "input": {
+# {
+# Variables:
+
+}
+  }
+    Due
+    Tags
+    Text
+    Id
+  createTask(input: $input) {
+mutation CreateTaskVariable($input: NewTask!) {
+# --- Crear tarea con variables ---
+
+# }
+#   "tag": "personal"
+# {
+# Variables (en el panel de Query Variables):
+
+}
+  }
+    Tags
+    Text
+    Id
+  getTasksByTag(tag: $tag) {
+query GetTasksByTagVariable($tag: String!) {
+# --- Usar variables para consulta flexible ---
+
+# ===============================================
+# QUERIES CON VARIABLES
+# ===============================================
+
+}
+  deleteAllTasks
+mutation DeleteAllTasks {
+# --- Eliminar todas las tareas ---
+
+}
+  deleteTask(id: "1")
+mutation DeleteTask {
+# --- Eliminar una tarea ---
+
+}
+  }
+    }
+      Contents
+      Date
+      Name
+    Attachments {
+    Due
+    Tags
+    Text
+    Id
+  }) {
+    ]
+      }
+        Contents: "Notas adicionales..."
+        Date: "2025-12-23T10:05:00Z"
+        Name: "notas.txt"
+      {
+      },
+        Contents: "Base64 encoded content here..."
+        Date: "2025-12-23T10:00:00Z"
+        Name: "reporte.pdf"
+      {
+    Attachments: [
+    Due: "2025-12-30T18:00:00Z"
+    Tags: ["trabajo", "documentos"]
+    Text: "Revisar documentos importantes"
+  createTask(input: {
+mutation CreateTaskWithAttachments {
+# --- Crear tarea con adjuntos ---
+
+mutation CreateSimpleTask {
+# --- Crear una tarea simple ---
+
+# ===============================================
+# MUTATIONS (Modificaciones)
+# ===============================================
+
+}
+  }
+    Tags
+    Text
+    Id
+  allTasks: getAllTasks {
+
+  }
+    Text
+    Id
+  workTasks: getTasksByTag(tag: "trabajo") {
+
+  }
+    Text
+    Id
+  personalTasks: getTasksByTag(tag: "personal") {
+query MultipleOperations {
+# --- Query con múltiples operaciones ---
+
+}
+  }
+    Due
+    Tags
+    Text
+    Id
+  getTasksByDue(due: "2025-12-25T23:59:59Z") {
+query GetTasksByDue {
+# --- Obtener tareas por fecha de vencimiento ---
+
+}
+  }
+    Due
+    Tags
+    Text
+    Id
+  getTasksByTag(tag: "personal") {
+query GetTasksByTag {
+# --- Obtener tareas por tag ---
+
+}
+  }
+    }
+      Date
+      Name
+    Attachments {
+    Due
+    Tags
+    Text
+    Id
+  getTask(id: "1") {
+query GetTaskById {
+# --- Obtener una tarea por ID ---
+# --- Obtener todas las tareas ---
+
+# ===============================================
+# QUERIES (Consultas)
+# ===============================================
+# Ejemplos de GraphQL para Task Server
 
 query {
   getAllTasks {
