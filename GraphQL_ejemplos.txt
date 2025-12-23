@@ -1,0 +1,29 @@
+// GraphQL
+
+query {
+  getAllTasks {
+    Id
+    Text
+    Tags
+    Due
+    Attachments {
+      Name
+      Date
+      Contents
+    }
+  }
+}
+
+mutation {
+  createTask(input: {
+    Text: "Comprar pan"
+    Tags: ["personal", "urgente"]
+    Due: "2025-12-25T23:59:59Z"
+    Attachments: []
+  }) {
+    Id
+    Text
+    Tags
+    Due
+  }
+}
